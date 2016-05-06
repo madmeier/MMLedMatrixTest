@@ -1,0 +1,35 @@
+﻿<Page
+    x:Class="LEDMatrixTest.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:LEDMatrixTest"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" >
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal">
+                <Ellipse x:Name="LED26" Fill="LightGray" Stroke="White" Width="25" Height="25" Margin="10"/>
+                <Ellipse x:Name="LED19" Fill="LightGray" Stroke="White" Width="25" Height="25" Margin="10"/>
+                <Ellipse x:Name="LED06" Fill="LightGray" Stroke="White" Width="25" Height="25" Margin="10"/>
+                <Ellipse x:Name="LED05" Fill="LightGray" Stroke="White" Width="25" Height="25" Margin="10"/>
+                <Ellipse x:Name="LED22" Fill="LightGray" Stroke="White" Width="25" Height="25" Margin="10"/>
+                <Ellipse x:Name="LED17" Fill="LightGray" Stroke="White" Width="25" Height="25" Margin="10"/>
+                <Ellipse x:Name="LED04" Fill="LightGray" Stroke="White" Width="25" Height="25" Margin="10"/>
+            </StackPanel>
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal">
+                <Ellipse x:Name="LED00" Fill="Black"     Stroke="White" Width="25" Height="25" Margin="10" />
+                <Ellipse x:Name="LED21" Fill="LightGray" Stroke="White" Width="25" Height="25" Margin="10"/>
+                <Ellipse x:Name="LED20" Fill="LightGray" Stroke="White" Width="25" Height="25" Margin="10"/>
+                <Ellipse x:Name="LED16" Fill="LightGray" Stroke="White" Width="25" Height="25" Margin="10"/>
+                <Ellipse x:Name="LED23" Fill="LightGray" Stroke="White" Width="25" Height="25" Margin="10"/>
+                <Ellipse x:Name="LED18" Fill="LightGray" Stroke="White" Width="25" Height="25" Margin="10"/>
+                <Ellipse x:Name="LED13" Fill="LightGray" Stroke="White" Width="25" Height="25" Margin="10"/>
+            </StackPanel>
+            <TextBlock x:Name="DelayText" Text="500ms" Margin="10" TextAlignment="Center" FontSize="26.667" />
+            <TextBlock x:Name="GpioStatus" Text="Waiting to initialize GPIO..." Margin="10,50,10,10" TextAlignment="Center" FontSize="26.667" />
+        </StackPanel>
+
+    </Grid>
+</Page>
