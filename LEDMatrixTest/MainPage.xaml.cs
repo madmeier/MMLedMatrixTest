@@ -62,6 +62,7 @@ namespace LEDMatrixTest
         private const int showsSadness = 6;
         private const int showsSurprise = 7;
 
+        private  int theSmiley = 0;
 
         private int[,,] smilies =
         {
@@ -369,11 +370,15 @@ namespace LEDMatrixTest
             {
                 // InitLauflicht();
                 // InitMatrixTest();
-                MatrixThreadTest_Init();
-
+                // MatrixThreadTest_Init();
+                InitIntervallSmiley();
             }
-}
+        }
 
+        /// <summary>
+        /// Initialize GPIO
+        /// </summary>
+        /// <returns>true if success</returns>
         private bool InitGPIO()
         {
             var gpio = GpioController.GetDefault();
@@ -398,16 +403,11 @@ namespace LEDMatrixTest
         }
 
 
-        private void InitMatrixTest()
-        {
-            MatrixTest_Init();
 
-            timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromMilliseconds(20);
-            timer.Tick += MatrixTest_Tick;
-            timer.Start();
-        }
-
+        /// <summary>
+        /// Sets the correct row address
+        /// </summary>
+        /// <param name="row"></param>
         private void setAddr (int row)
         {
             if (row % 2 == 1)
@@ -451,6 +451,14 @@ namespace LEDMatrixTest
 
         }
 
+
+
+        /// <summary>
+        /// Sets the RGB value for the upper rows
+        /// </summary>
+        /// <param name="r"></param>
+        /// <param name="g"></param>
+        /// <param name="b"></param>
         private void SetRGB0(GpioPinValue r, GpioPinValue g, GpioPinValue b)
         {
             GPIO_pins[pinR0].Write(r);
@@ -459,6 +467,12 @@ namespace LEDMatrixTest
 
         }
 
+        /// <summary>
+        /// Sets the RGB value for the lower rows
+        /// </summary>
+        /// <param name="r"></param>
+        /// <param name="g"></param>
+        /// <param name="b"></param>
         private void SetRGB1(GpioPinValue r, GpioPinValue g, GpioPinValue b)
         {
             GPIO_pins[pinR1].Write(r);
@@ -466,16 +480,36 @@ namespace LEDMatrixTest
             GPIO_pins[pinB1].Write(b);
         }
 
+        /// <summary>
+        /// clock pulse
+        /// </summary>
         private void clock ()
         {
             GPIO_pins[pinCLK].Write(GpioPinValue.High);
             GPIO_pins[pinCLK].Write(GpioPinValue.Low);
         }
 
+        /// <summary>
+        /// strobe pulse
+        /// </summary>
         private void strobe()
         {
             GPIO_pins[pinSTB].Write(GpioPinValue.High);
             GPIO_pins[pinSTB].Write(GpioPinValue.Low);
+        }
+
+
+        /// <summary>
+        /// A first test case
+        /// </summary>
+        private void InitMatrixTest()
+        {
+            MatrixTest_Init();
+
+            timer = new DispatcherTimer();
+            timer.Interval = TimeSpan.FromMilliseconds(20);
+            timer.Tick += MatrixTest_Tick;
+            timer.Start();
         }
 
 
@@ -495,6 +529,9 @@ namespace LEDMatrixTest
             timer.Start();
         }
 
+
+
+
         private void MatrixTest_Tick(object sender, object e)
         {
            GPIO_pins[pinOE].Write(GpioPinValue.High);
@@ -510,24 +547,73 @@ namespace LEDMatrixTest
 
        }
 
+        private void InitIntervallSmiley()
+        {
+            timer = new DispatcherTimer();
+            timer.Interval = TimeSpan.FromMilliseconds(10000);
+            timer.Tick += Intervall_Tick;
+            timer.Start();
+        }
+
+
+
+        private void Intervall_Tick(object sender, object e)
+        {
+            
+            Task.Factory.StartNew(() => displaySmiley(theSmiley));
+            theSmiley += 1;
+            if (theSmiley == 8)
+            {
+                theSmiley = 0;
+            }
+        }
+
+
+        private void displaySmiley(int currentSmiley)
+        {
+            for (int i = 0; i < 100; i++)
+            {
+                showSmiley(currentSmiley);
+            }
+            clearLED();
+        }
+
+
 
         private void MatrixThreadTest_Init()
         {
-
-
- 
-            Task task1 = new Task(new Action(TickThread));
+            Task task1 = new Task(new Action(AllSmileyTask));
             task1.Start();
 
         }
 
-        private void TickThread ()
+        
+
+        private void AllSmileyTask()
         {
             int currentSmiley = showsAnger;
             int counter = 0;
             while (true)
             {
+                showSmiley(currentSmiley);
 
+                counter++;
+                if (counter == 100)
+                {
+                    currentSmiley++;
+                    if (currentSmiley == 8)
+                    {
+                        currentSmiley = 0;
+                    }
+                    counter = 0;
+                }
+            }
+        }
+
+        private void showSmiley (int currentSmiley)
+        {
+            for (row = 0; row < 16; row++)
+            {
                 for (int i = 0; i < 32; i++)
                 {
                     switch (smilies[currentSmiley, row, i])
@@ -551,7 +637,7 @@ namespace LEDMatrixTest
                             SetRGB0(GpioPinValue.Low, GpioPinValue.Low, GpioPinValue.Low);
                             break;
                     }
-                    switch (smilies[currentSmiley, row+16, i])
+                    switch (smilies[currentSmiley, row + 16, i])
                     {
                         case 0:
                             SetRGB1(GpioPinValue.Low, GpioPinValue.Low, GpioPinValue.Low);
@@ -579,30 +665,32 @@ namespace LEDMatrixTest
                     clock();
                 }
                 strobe();
-
                 GPIO_pins[pinOE].Write(GpioPinValue.High);
                 setAddr(row);
                 GPIO_pins[pinOE].Write(GpioPinValue.Low);
+            }
 
-                row = row + 1;
 
-                if (row == 16)
-                {
-                    row = 0;
+        }
+
+
+        private void clearLED()
+        {
+            for (row = 0; row < 16; row++)
+            {
+                for (int i = 0; i < 32; i++)
+                {                  
+                    SetRGB0(GpioPinValue.Low, GpioPinValue.Low, GpioPinValue.Low);
+                    SetRGB1(GpioPinValue.Low, GpioPinValue.Low, GpioPinValue.Low);
+                    clock();
                 }
-
-                counter++;
-                if (counter == 1000)
-                {
-                    currentSmiley++;
-                    if (currentSmiley == 8)
-                    {
-                        currentSmiley = 0;
-                    }
-                    counter = 0;
-                }
+                strobe();
+                GPIO_pins[pinOE].Write(GpioPinValue.High);
+                setAddr(row);
+                GPIO_pins[pinOE].Write(GpioPinValue.Low);
             }
         }
+
 
 
         private void InitLauflicht()
