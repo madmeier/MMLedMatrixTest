@@ -30,6 +30,10 @@
             <TextBlock x:Name="DelayText" Text="500ms" Margin="10" TextAlignment="Center" FontSize="26.667" />
             <TextBlock x:Name="GpioStatus" Text="Waiting to initialize GPIO..." Margin="10,50,10,10" TextAlignment="Center" FontSize="26.667" />
         </StackPanel>
+        <Button x:Name="happyButton" Content="Happy" HorizontalAlignment="Left" Margin="15,556,0,0" VerticalAlignment="Top" Click="happyButton_Click"/>
+        <Button x:Name="iterateButton" Content="Iterate" HorizontalAlignment="Left" Margin="148,498,0,0" VerticalAlignment="Top" Click="iterateButton_Click"/>
+        <Button x:Name="fearButton" Content="Fear" HorizontalAlignment="Left" Margin="148,556,0,0" VerticalAlignment="Top" Click="fearButton_Click"/>
+        <Button x:Name="angerButton" Content="Anger" HorizontalAlignment="Left" Margin="288,556,0,0" VerticalAlignment="Top" Click="angerButton_Click"/>
 
     </Grid>
 </Page>

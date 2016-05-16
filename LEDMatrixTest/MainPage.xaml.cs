@@ -62,7 +62,8 @@ namespace LEDMatrixTest
         private const int showsSadness = 6;
         private const int showsSurprise = 7;
 
-        private  int theSmiley = 0;
+        private int theSmiley = 0;
+        private int ledSmiley = 0;
 
         private int[,,] smilies =
         {
@@ -371,7 +372,7 @@ namespace LEDMatrixTest
                 // InitLauflicht();
                 // InitMatrixTest();
                 // MatrixThreadTest_Init();
-                InitIntervallSmiley();
+                // InitIntervallSmiley();
             }
         }
 
@@ -610,6 +611,24 @@ namespace LEDMatrixTest
             }
         }
 
+
+        private void OneSmileyTask()
+        {
+            for (int i = 0; i < 100; i++)
+            {
+                showSmiley(ledSmiley);
+            }
+            clearLED();
+       }
+
+        private void showSmileyTask (int s)
+        {
+            ledSmiley = s;
+            Task task1 = new Task(new Action(OneSmileyTask));
+            task1.Start();
+
+        }
+
         private void showSmiley (int currentSmiley)
         {
             for (row = 0; row < 16; row++)
@@ -731,5 +750,28 @@ namespace LEDMatrixTest
            
         }
 
+        private void iterateButton_Click(object sender, RoutedEventArgs e)
+        {
+            InitIntervallSmiley();
+            happyButton.IsEnabled = false;
+            fearButton.IsEnabled = false;
+            angerButton.IsEnabled = false;
+        }
+
+        private void happyButton_Click(object sender, RoutedEventArgs e)
+        {
+            showSmileyTask(showsHappyiness);
+        }
+
+        private void fearButton_Click(object sender, RoutedEventArgs e)
+        {
+            showSmileyTask(showsFear);
+        }
+
+        private void angerButton_Click(object sender, RoutedEventArgs e)
+        {
+            showSmileyTask(showsAnger);
+
+        }
     }
 }
