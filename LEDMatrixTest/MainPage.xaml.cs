@@ -684,8 +684,8 @@ namespace LEDMatrixTest
                     SetRGB1(GpioPinValue.Low, GpioPinValue.Low, GpioPinValue.Low);
                     clock();
                 }
-                strobe();
                 GPIO_pins[pinOE].Write(GpioPinValue.High);
+                strobe();
                 setAddr(row);
                 GPIO_pins[pinOE].Write(GpioPinValue.Low);
             }
